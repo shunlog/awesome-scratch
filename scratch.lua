@@ -18,12 +18,20 @@ local function turn_on(c)
     client.focus = c
 end
 
--- Turn off this scratch window client (remove current tag from window's tags)
+-- Turn off this scratch window client (remove current tags from window's tags)
 local function turn_off(c)
-    local current_tag = awful.tag.selected(c.screen)
-    local ctags = {}
-    for k,tag in pairs(c:tags()) do
-        if tag ~= current_tag then table.insert(ctags, tag) end
+    local sel_tags = awful.screen.focused().selected_tags
+    local ctags = c:tags()
+    for k, target in pairs(sel_tags) do
+        for i, v in pairs(ctags) do
+            if v == target then
+                index = i
+                break
+            end
+        end
+        if index then
+            ctags[index] = nil
+        end
     end
     c:tags(ctags)
 end
